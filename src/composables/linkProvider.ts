@@ -13,7 +13,7 @@ export function linkProvider(
     links.value.push(data);
 
     const node = gun.get(`link-plugin/${id}`).put(data);
-    gun.get('links').get(instance).set(node);
+    gun.get(instance).get('links').set(node);
 
     return node;
   }
@@ -22,14 +22,14 @@ export function linkProvider(
   const removeLink = async (id: string) => {
     const node = gun.get(`link-plugin/${id}`);
     node.then(() => {
-      gun.get('links').get(instance).unset(node);
+      gun.get(instance).get('links').unset(node);
     });
     links.value = links.value.filter(x => x.id !== id);
   }
 
   onMounted(() => {
-    gun.get('links')
-    .get(instance)
+    gun.get(instance)
+    .get('links')
     .map()
     .once((data) => {
       if (data) {
@@ -42,8 +42,8 @@ export function linkProvider(
   });
 
   onUnmounted(() => {
-    gun.get('links')
-    .get(instance)
+    gun.get(instance)
+    .get('links')
     .map()
     .off();
   });

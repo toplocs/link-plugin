@@ -36,6 +36,7 @@ import SubmitButton from '@/components/common/SubmitButton.vue';
 import Callout from '@/components/common/Callout.vue';
 import { useLinks } from '@/composables/linkProvider';
 
+const emit = defineEmits(['submit']);
 const { links, createLink } = useLinks();
 const form = ref<HTMLFormElement | null>(null);
 const errorMessage = ref('');
@@ -46,6 +47,7 @@ const onSubmit = async () => {
     const formData = new FormData(form.value ?? undefined);
     const node = await createLink(formData);
     form.value?.reset();
+    emit('submit');
   } catch (error) {
     console.error(error);
     errorMessage.value = error.response.data;

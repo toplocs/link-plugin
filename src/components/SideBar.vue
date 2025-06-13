@@ -10,7 +10,7 @@
       </template>
 
       <template #content="{ closeDialog }">
-        <LinkForm />
+        <LinkForm @submit="closeDialog" />
 
         <SubmitButton
           @click.stop="closeDialog(false)"
