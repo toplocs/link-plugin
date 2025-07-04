@@ -1,46 +1,122 @@
-# demo-plugin
+# Link Plugin for TopLocs
 
-This template should help get you started developing with Vue 3 in Vite.
+## Status: Hybrid Architecture (Gun.js + Backend)
+- **P2P Migration**: ⭐⭐ Gun.js integrated, no gun branch
+- **Last Updated**: June 2025
+- **Maturity**: Active Development
 
-## Recommended IDE Setup
+## Overview
+The Link Plugin enables users to share and organize links within TopLocs spheres. It provides link previews, categorization, and collaborative bookmarking for community knowledge sharing.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Architecture
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+### Current State (Hybrid)
+```
+Browser Client → Gun.js → P2P Network
+       ↓                      ↓
+   Link Preview API      Gun Relay
+       ↓                      ↓
+   Express API ← → Server with Prisma
+       ↓
+   PostgreSQL
 ```
 
-### Compile and Hot-Reload for Development
+### Technology Stack
+- **Frontend**: Vue 3, TypeScript, Tailwind CSS
+- **P2P**: Gun.js (client-side)
+- **Backend**: Express.js, Prisma ORM, PostgreSQL
+- **Build**: Vite, Module Federation
 
-```sh
-npm run dev
+## Features
+- Link sharing and organization
+- Automatic link previews
+- Categorization and tagging
+- Settings dialog for customization
+- Real-time updates via Gun.js
+- Collaborative bookmarking
+
+## Gun.js Integration
+```javascript
+// Links stored in Gun
+gun.get('links').get(sphereId).get(linkId)
+
+// Link categories
+gun.get('links').get(sphereId).get('categories')
+
+// User link collections
+gun.user().get('links').get(collectionId)
+
+// Real-time link updates
+gun.get('links').get(sphereId).on(data => {
+  // Update link list
+})
 ```
 
-### Type-Check, Compile and Minify for Production
+## Development
 
-```sh
-npm run build
+### Setup
+```bash
+# Install dependencies
+pnpm install
+
+# Development
+pnpm dev
+
+# Build plugin
+pnpm build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Module Federation Exposes
+- `./Sidebar`: Link navigation sidebar
+- `./Settings`: Plugin settings dialog
+- `./LinkView`: Main link management view
+- `./LinkList`: Link list component
+- `./LinkPreview`: Link preview component
 
-```sh
-npm run test:unit
-```
+## Implementation Details
+- Minimal functionality currently implemented
+- Settings dialog system in place
+- Basic link storage structure
+- Preview generation handled on backend
+- Real-time synchronization via Gun.js
 
-### Lint with [ESLint](https://eslint.org/)
+## Migration Status to Pure P2P
+- ✅ Gun.js for data storage
+- ✅ Settings management
+- ❌ Backend for link preview generation
+- ❌ Centralized link metadata fetching
+- ❌ Server-side validation
 
-```sh
-npm run lint
-```
-# link-plugin
+## Known Issues
+- Link preview requires backend
+- No offline preview caching
+- Limited metadata extraction
+- Backend dependency for storage
+
+## Future: Pure P2P Architecture
+1. Client-side link preview (CORS proxy?)
+2. Distributed link metadata cache
+3. Gun.js only storage
+4. Peer-shared link previews
+5. IPFS for preview image storage
+
+## Security Considerations
+- Validate URLs client-side
+- Sanitize preview content
+- Prevent tracking pixels
+- Privacy-respecting preview fetch
+- No persistent link tracking
+
+## Contributing
+This plugin needs help migrating to pure P2P architecture. Contributions welcome for:
+- Removing backend dependencies
+- Client-side link preview generation
+- Enhanced categorization features
+- Improved collaborative features
+
+## Related Documentation
+- [TopLocs Plugin Development Guide](https://github.com/toplocs/tribelike/blob/main/docs/plugin-development.md)
+- [TopLocs Architecture Overview](https://github.com/toplocs/tribelike/blob/main/docs/architecture.md)
+
+## License
+MIT License - See the main TopLocs project for details.
