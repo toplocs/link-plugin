@@ -13,7 +13,7 @@
         <LinkForm @submit="closeDialog" />
 
         <SubmitButton
-          @click.stop="closeDialog(false)"
+          @click.stop="closeDialog()"
           className="w-full mt-1"
         > Close
         </SubmitButton>
@@ -23,7 +23,7 @@
 
   <div 
     v-for="link of links"
-    :key="link"
+    :key="link.id"
     class="mb-2 dark:text-white"
   > • 
     <a
@@ -37,8 +37,6 @@
 </template>
 //
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
 import Title from './common/Title.vue';
 import ActionButton from '@/components/common/ActionButton.vue';
 import Dialog from '@/components/common/Dialog.vue';
@@ -46,8 +44,6 @@ import SubmitButton from '@/components/common/SubmitButton.vue';
 import LinkForm from '@/components/forms/LinkForm.vue';
 import { useLinks } from '@/composables/linkProvider';
 
-const props = defineProps({
-  parentId: String,
-})
-const { links } = useLinks();
+const linkProvider = useLinks();
+const links = linkProvider.links;
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <Sidebar :parentId="props.parentId" />
+  <Sidebar/>
 </template>
 
 <script setup lang="ts">
@@ -10,5 +10,6 @@ const props = defineProps({
   parentId: String,
 });
 
-linkProvider(props.parentId);
+console.log("SideBar instance: ", props.parentId);
+linkProvider(props.parentId ?? 'test');
 </script>

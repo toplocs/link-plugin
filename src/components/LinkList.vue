@@ -3,6 +3,7 @@
     <LinkListItem
       v-for="link of links"
       :link="link"
+      :key="link.id"
     />
   </div>
 </template>

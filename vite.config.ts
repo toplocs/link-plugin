@@ -3,53 +3,66 @@ import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import federation from "@originjs/vite-plugin-federation";
 import topLevelAwait from 'vite-plugin-top-level-await';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
+// Plugin configuration - supports both dev and preview modes
 export default defineConfig({
   plugins: [
     vue(),
     federation({
-        name: 'link-plugin',
-        filename: 'plugin.js',
-        exposes: {
-          './Sidebar': './src/views/SidebarWrapper.vue',
-          './Settings': './src/views/SettingsWrapper.vue',
-        },
-        shared: ['vue', 'tailwindcss']
+      name: 'link-plugin',
+      filename: 'plugin.js',
+      exposes: {
+        './PluginConfig': './src/index.ts',
+        './Sidebar': './src/views/SidebarView.vue',
+        './Settings': './src/views/SettingsView.vue',
+      },
+      shared: ['vue'],
+      remotes: {
+        remoteName: '',
+      },
     }),
     topLevelAwait({
       promiseExportName: '__tla',
       promiseImportName: i => `__tla_${i}`
     })
   ],
+
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss,
+        autoprefixer,
+      ],
+    },
+  },
+  
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@dev': path.resolve(__dirname, './dev'),
     },
   },
-  /*server: {
-    port: 3000,
-  },*/
-  /*define: {
-    'process.env': {},
-  },*/
+
+  optimizeDeps: {
+    exclude: ["__federation__"],
+  },
+
   build: {
-    outDir: './server/views',
-    rollupOptions: {
-      external: ['tailwindcss'],
+    outDir: './dist',
+    minify: false,
+    terserOptions: {
+      compress: false,
+      mangle: false,
     },
-    /*lib: {
-      entry: 'src/main.ts', // Entry point for the plugin
-      name: 'ChatPlugin',
-      fileName: (format) => `ChatPlugin.${format}.js`
-    },*/
-    /*rollupOptions: {
-      // Ensure the component can be imported by the main app
+    rollupOptions: {
       external: ['vue'],
       output: {
         globals: {
           vue: 'Vue'
         }
       }
-    }*/
+    }
   }
 });

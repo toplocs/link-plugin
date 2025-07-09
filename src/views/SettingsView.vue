@@ -25,5 +25,5 @@ const props = defineProps({
   parentId: String,
 });
 
-linkProvider(props.parentId);
+linkProvider(props.parentId ?? 'test');
 </script>

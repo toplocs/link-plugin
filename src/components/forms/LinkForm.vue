@@ -35,9 +35,16 @@ import TextInput from '@/components/common/TextInput.vue';
 import SubmitButton from '@/components/common/SubmitButton.vue';
 import Callout from '@/components/common/Callout.vue';
 import { useLinks } from '@/composables/linkProvider';
+import type { LinkData } from '@/services/Link';
+
+interface LinkProvider {
+  links: LinkData[];
+  createLink: (formData: FormData) => Promise<{ node: unknown; data: LinkData }>;
+  removeLink: (id: string) => Promise<void>;
+}
 
 const emit = defineEmits(['submit']);
-const { links, createLink } = useLinks();
+const { createLink } = useLinks() as LinkProvider;
 const form = ref<HTMLFormElement | null>(null);
 const errorMessage = ref('');
 
@@ -45,12 +52,19 @@ const onSubmit = async () => {
   try {
     if (errorMessage.value.length) return;
     const formData = new FormData(form.value ?? undefined);
-    const node = await createLink(formData);
+    await createLink(formData);
     form.value?.reset();
     emit('submit');
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(error);
-    errorMessage.value = error.response.data;
+    if (error instanceof Error) {
+      errorMessage.value = error.message;
+    } else if (typeof error === 'object' && error !== null && 'response' in error) {
+      const responseError = error as { response?: { data?: string } };
+      errorMessage.value = responseError.response?.data || 'An error occurred';
+    } else {
+      errorMessage.value = 'An unexpected error occurred';
+    }
   }
 }
 </script>
