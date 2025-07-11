@@ -13,43 +13,65 @@
       </div>
     </div>
     
-    <!-- Plugin Components Showcase (Settings slot = main, InfoView slot = sidebar) -->
-    <div class="flex gap-8 mb-12 min-h-96 overflow-x-auto">
-      <div class="flex-1 min-w-96">
-        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Main Content Area</h2>
-        <p class="text-gray-600 mb-2">Slot: Settings</p>
-        <p class="text-gray-600 mb-4">Settings Component</p>
-        <div class="border-2 border-blue-600 rounded-lg p-4 bg-white min-h-72">
-          <!-- Dev mode: Direct component rendering -->
-          <DirectComponent
-            v-if="components?.Settings"
-            :component="components.Settings"
-          />
-          <!-- Preview mode: Federated component via PluginComponent -->
-          <PluginComponent 
-            v-else
-            :plugin="{name: 'link-plugin', url: 'http://localhost:3006/assets/plugin.js'}"
-            position="Settings" 
-          />
+
+    <div class="flex flex-row gap-4">
+      <div class="flex flex-col gap-4 w-3/4">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+          Main Content Area
+        </h2>
+        <div v-for="(content, i) in contents" :key="i">
+          <p class="text-gray-600 mb-2">
+            Entity: {{ content.entity }}
+          </p>
+          <p class="text-gray-600 mb-2">
+            Page: {{ content.page }}
+          </p>
+          <p class="text-gray-600 mb-4">
+            {{ content.component }}
+          </p>
+          <div class="border-2 border-blue-600 rounded-lg p-4 bg-white min-h-72">
+            <!-- Dev mode: Direct component rendering -->
+            <DirectComponent
+              v-if="components?.Settings"
+              :component="components.Settings"
+            />
+            <!-- Preview mode: Federated component via PluginComponent -->
+            <PluginComponent 
+              v-else
+              :plugin="{name: 'link-plugin', url: 'http://localhost:3006/assets/plugin.js'}"
+              position="TopicSettingsContent" 
+            />
+          </div>
         </div>
       </div>
-      
-      <div class="w-72 min-w-72 flex-shrink-0">
-        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Sidebar</h2>
-        <p class="text-gray-600 mb-2">Slot: InfoView</p>
-        <p class="text-gray-600 mb-4">Sidebar Component</p>
-        <div class="border-2 border-blue-600 rounded-lg p-4 bg-white min-h-72">
-          <!-- Dev mode: Direct component rendering -->
-          <DirectComponent
-            v-if="components?.Sidebar"
-            :component="components.Sidebar"
-          />
-          <!-- Preview mode: Federated component via PluginComponent -->
-          <PluginComponent 
-            v-else
-            :plugin="{name: 'link-plugin', url: 'http://localhost:3006/assets/plugin.js'}"
-            position="Sidebar" 
-          />
+
+      <div class="flex flex-col gap-4 min-w-72">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+          Sidebar
+        </h2>
+        <div v-for="(sidebar, i) in sidebars" :key="i">
+          <p class="text-gray-600 mb-2">
+            Entity: {{ sidebar.entity }}
+          </p>
+          <p class="text-gray-600 mb-2">
+            Page: {{ sidebar.page }}
+          </p>
+          <p class="text-gray-600 mb-4">
+            {{ sidebar.component }}
+          </p>
+          <div class="border-2 border-blue-600 rounded-lg p-4 bg-white min-h-72">
+            <!-- Dev mode: Direct component rendering -->
+            <DirectComponent
+              v-if="components?.Sidebar"
+              :component="components.Sidebar"
+            />
+            <!-- Preview mode: Federated component via PluginComponent -->
+            <PluginComponent 
+              v-else
+              :plugin="{name: 'link-plugin', url: 'http://localhost:3006/assets/plugin.js'}"
+              position="TopicInfoSidebar" 
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -61,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import DirectComponent from './DirectComponent.vue';
 import PluginComponent from './PluginComponent.vue';
 
@@ -90,6 +112,12 @@ interface PluginSlot {
 const isPreviewMode = ref(false);
 const pluginConfig = ref<BasePluginConfig | null>(null);
 const components = ref({});
+const contents = computed(() => pluginConfig.value?.slots.filter(
+  x => x.slot == 'Content'
+));
+const sidebars = computed(() => pluginConfig.value?.slots.filter(
+  x => x.slot == 'Sidebar'
+));
 
 // Check if preview mode (plugin server at 3006) is running
 async function detectMode() {
@@ -126,7 +154,7 @@ async function loadPlugin() {
   await detectMode();
   
   if (isPreviewMode.value) {
-    pluginConfig.value = await loadPluginConfig('http://localhost:3006/assets/plugin.js');
+    pluginConfig.value = await loadPluginConfig('http://localhost:3006/assets/plugin.js'); //put in env file
   } else {
     console.log('Dev mode: Loading direct imports from ../src');
     await loadDirectImports();
@@ -140,7 +168,7 @@ async function loadDirectImports() {
     const [configModule, sidebarModule, settingsModule] = await Promise.all([
       import('../../src/index.ts'),
       import('../../src/views/SidebarView.vue'),
-      import('../../src/views/ContentView.vue')
+      import('../../src/views/SettingsView.vue')
     ]);
     console.log('Direct imports loaded:', configModule);
 

@@ -26,8 +26,10 @@ const pluginConfig: BasePluginConfig = {
   description: 'Share and organize links within TopLocs spheres',
   author: 'TopLocs Team',
   slots: [
-    { slot: 'Info', component: 'Sidebar' },
-    { slot: 'Settings', component: 'Content' }
+    { entity: 'Topic', page: 'Info', slot: 'Sidebar', component: 'SidebarView' },
+    { entity: 'Topic', page: 'Settings', slot: 'Content', component: 'SettingsView' },
+    { entity: 'Location', page: 'Info', slot: 'Sidebar', component: 'SidebarView' },
+    { entity: 'Location', page: 'Settings', slot: 'Content', component: 'SettingsView' },
   ]
 };
 
