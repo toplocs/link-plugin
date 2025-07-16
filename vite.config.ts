@@ -15,8 +15,8 @@ export default defineConfig({
       filename: 'plugin.js',
       exposes: {
         './PluginConfig': './src/index.ts',
-        './TopicInfoSidebar': './src/views/SidebarView.vue',
-        './TopicSettingsContent': './src/views/SettingsView.vue',
+        './SidebarView': './src/views/SidebarView.vue',
+        './SettingsView': './src/views/SettingsView.vue',
       },
       shared: ['vue'],
       remotes: {
