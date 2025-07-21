@@ -6,6 +6,11 @@
 import Sidebar from '@/components/SideBar.vue';
 import { linkProvider } from '@/composables/linkProvider';
 
+
+defineOptions({
+  name: 'LinkInfoSidebar'
+});
+
 const props = defineProps({
   parentId: String,
 });
