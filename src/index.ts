@@ -14,7 +14,9 @@ interface BasePluginConfig {
 }
 
 interface PluginSlot {
-  slot: string;
+  entity: 'Topic' | 'Location';
+  page: 'Info' | 'Settings';
+  slot: 'Content' | 'Sidebar';
   component: string;
 }
 
@@ -26,10 +28,10 @@ const pluginConfig: BasePluginConfig = {
   description: 'Share and organize links within TopLocs spheres',
   author: 'TopLocs Team',
   slots: [
-    { entity: 'Topic', page: 'Info', slot: 'Sidebar', component: 'SidebarView' },
-    { entity: 'Topic', page: 'Settings', slot: 'Content', component: 'SettingsView' },
-    { entity: 'Location', page: 'Info', slot: 'Sidebar', component: 'SidebarView' },
-    { entity: 'Location', page: 'Settings', slot: 'Content', component: 'SettingsView' },
+    { entity: 'Topic', page: 'Info', slot: 'Sidebar', component: 'Sidebar' },
+    { entity: 'Topic', page: 'Settings', slot: 'Content', component: 'Content' },
+    { entity: 'Location', page: 'Info', slot: 'Sidebar', component: 'Sidebar' },
+    { entity: 'Location', page: 'Settings', slot: 'Content', component: 'Content' }
   ]
 };
 

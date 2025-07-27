@@ -1,43 +1,42 @@
 # Link Plugin for TopLocs
 
 ## Status: Decoupled Plugin Architecture
-- **Architecture**: Federated P## 🚀 Getting Started
+- **Architecture**: Federated Plugin with Module Federation
+- **Last Updated**: January 2025
+- **Maturity**: Active Development
+- **Live Demo**: https://toplocs.github.io/link-plugin/
 
-### Hot-Reload Development Setup
+## 🚀 Getting Started
 
-The project uses a **dual-server architecture** for optimal development experience:
-
-1. **Plugin Server** (Port 3006): Serves the federated plugin with hot-reload
-2. **Dev Environment** (Port 3005): Loads and showcases the plugin dynamically
+### Development Setup
 
 ```bash
 # Install dependencies
 pnpm install
 
-# Start both servers simultaneously (recommended)
-pnpm dev:full
-
-# Or start individually:
-# Terminal 1: Plugin server with hot-reload
-pnpm dev:plugin
-
-# Terminal 2: Dev environment  
+# Start development server
 pnpm dev
+
+# Build for production
+pnpm build
+
+# Preview built plugin
+pnpm preview
 ```
 
 **Development URLs:**
-- **Dev Environment**: http://localhost:3005 (main development interface)
+- **Dev Environment**: http://localhost:4173 (main development interface)
 - **Plugin Server**: http://localhost:3006 (federated plugin with hot-reload)
 - **Plugin URL**: http://localhost:3006/plugin.js (federation endpoint)
 
-### Hot-Reload Benefits
+### Available Commands
 
-- ✅ **Instant Updates**: Changes to plugin code hot-reload automatically
-- ✅ **Federation Testing**: Real federated module loading during development  
-- ✅ **Component Isolation**: Test plugin components independently
-- ✅ **Environment Separation**: Clear separation between dev tools and plugin logicironment Separation  
-- **Last Updated**: January 2025
-- **Maturity**: Active Development
+- `pnpm dev` - Start development server with hot-reload
+- `pnpm build` - Build plugin for production
+- `pnpm preview` - Preview built plugin locally
+- `pnpm test` - Run tests
+- `pnpm type-check` - Run TypeScript type checking
+- `pnpm lint` - Run ESLint and fix issues
 
 ## Overview
 The Link Plugin enables users to share and organize links within TopLocs spheres. It features a modern decoupled architecture with separate development and plugin environments, using Module Federa### Core Plugin Registration
@@ -86,22 +85,24 @@ The dev environment (`/dev`) provides:
 4. **Manual Controls**: Buttons to refresh or re-register the plugin
 5. **Component Testing**: Live preview of federated components
 
-### Package.json Scripts
+## 🚀 Deployment
+
+### GitHub Pages Deployment
+
+This plugin automatically deploys to GitHub Pages via GitHub Actions:
+
+- **Live Demo**: https://toplocs.github.io/link-plugin/
+- **Deployment**: Automatic on push to main branch
+- **Build Output**: Only the `dist` folder (static JS files) is deployed
+
+### Manual Deployment
+
 ```bash
-# Quick start (recommended) - Uses startup script
-./dev-start.sh
-
-# Standard development environment only
-pnpm dev
-
-# Production build
+# Build for production
 pnpm build
 
-# Start plugin server (after build)  
-pnpm run dev:serve
-
-# Run both dev environment and plugin server
-pnpm run dev:full
+# Deploy dist/ folder to your hosting service
+# The plugin will be available at your-domain.com/plugin.js
 ```
 
 ## 🏗️ Architecture Overview
@@ -158,50 +159,28 @@ The development environment uses `PluginComponent` to dynamically load the feder
 
 ### Development Workflow
 
-1. **Start Hot-Reload Development**:
+1. **Start Development**:
    ```bash
-   pnpm dev:full
+   pnpm dev
    ```
-   This starts both the plugin server (3006) and dev environment (3005)
+   This starts the development server with hot-reload
 
 2. **Edit Plugin Code**:
    - Modify files in `src/` 
-   - Changes hot-reload automatically in the plugin server
-   - Dev environment updates via federation
+   - Changes hot-reload automatically
+   - View updates in the browser
 
-3. **Monitor Plugin Registration**:
-   - Open `http://localhost:3005` in your browser
-   - Check the "Plugin Registration Information" section
-   - View current registration status and URL
-   - See all registered plugins in the system
+3. **Test Plugin**:
+   - Open `http://localhost:4173` in your browser
+   - Test plugin components in the development environment
+   - Verify plugin loading and functionality
 
-4. **Plugin Status Indicators**:
-   - ✅ **Registered**: Plugin is properly registered and available
-   - ⚠️ **Not Found**: Plugin needs registration (auto-triggered)
-   - ❌ **Error**: Registration failed (manual retry available)
-
-5. **Manual Controls**:
-   - **Refresh Info**: Reload registration status
-   - **Re-register Plugin**: Force re-registration
-   - **Register Plugin Now**: Initial registration if not found
-
-6. **Component Testing**:
-   - Test federated components in the showcase area
-   - Verify plugin loading from registration URL
-   - Debug component interactions with hot-reload
-
-### Plugin-Only Development
-Work directly with the plugin components:
-
-```bash
-# Build the plugin for federation
-pnpm build
-
-# Preview the built plugin
-pnpm preview
-```
-
-The built plugin exposes federated modules that can be consumed by other applications.
+4. **Build and Preview**:
+   ```bash
+   pnpm build
+   pnpm preview
+   ```
+   Test the built plugin locally before deployment
 
 ## 🧩 Plugin Federation
 
@@ -211,9 +190,9 @@ The plugin exposes these federated modules:
 ```javascript
 // vite.config.ts federation setup
 exposes: {
-  './Sidebar': './src/plugin/Sidebar.ts',     // Link navigation sidebar
-  './Settings': './src/plugin/Settings.ts',   // Plugin settings dialog  
-  './Plugin': './src/plugin/index.ts',        // Plugin registration
+  './PluginConfig': './src/index.ts',           // Plugin configuration
+  './InfoSidebar': './src/views/info/Sidebar.vue',     // Info sidebar component
+  './SettingsContent': './src/views/settings/Content.vue',   // Settings content component
 }
 ```
 
@@ -221,18 +200,18 @@ exposes: {
 The dev environment loads plugins dynamically:
 
 ```javascript
-// dev/App.vue - Federation loading with fallback
+// dev/components/PluginEnvironment.vue - Federation loading with fallback
 try {
   // Try to load as federated modules
-  const sidebarModule = await import('link-plugin/Sidebar');
-  const settingsModule = await import('link-plugin/Settings');
+  const sidebarModule = await import('link-plugin/InfoSidebar');
+  const settingsModule = await import('link-plugin/SettingsContent');
   
   SidebarComponent.value = sidebarModule.default;
   SettingsComponent.value = settingsModule.default;
 } catch (error) {
   // Fallback to local components for development
-  const { default: SidebarView } = await import('../src/views/SidebarView.vue');
-  const { default: SettingsView } = await import('../src/views/SettingsView.vue');
+  const { default: SidebarView } = await import('../src/views/info/Sidebar.vue');
+  const { default: SettingsView } = await import('../src/views/settings/Content.vue');
   
   SidebarComponent.value = SidebarView;
   SettingsComponent.value = SettingsView;
@@ -245,7 +224,7 @@ try {
 - **File**: `src/plugin/index.ts`
 - **Purpose**: Main plugin registration and federation exports
 - **Build**: Configured in `vite.config.ts` → `build.lib.entry`
-- **Federation**: Exposes components via `./Plugin`, `./Sidebar`, `./Settings`
+- **Federation**: Exposes components via `./PluginConfig`, `./InfoSidebar`, `./SettingsContent`
 
 ### Development Entry Point
 - **File**: `dev/main.ts` 
@@ -263,8 +242,8 @@ pnpm dev
 # Edit plugin components in src/
 # Changes auto-reload in dev environment
 
-# Test federation loading
-# Check browser console for federation status
+# Test components in browser
+# Check browser console for any errors
 ```
 
 ### 2. Integration Testing
@@ -272,8 +251,10 @@ pnpm dev
 # Build plugin for integration
 pnpm build
 
-# Test in host application
-# Plugin available at http://localhost:3005/assets/plugin.js
+# Preview built plugin
+pnpm preview
+
+# Test plugin federation loading
 ```
 
 ### 3. Production Deployment
@@ -282,7 +263,7 @@ pnpm build
 pnpm build
 
 # Plugin assets output to dist/
-# Deploy dist/ to CDN or static hosting
+# Deploy via GitHub Actions or manual deployment
 ```
 
 ## 📦 Plugin Deployment
@@ -459,6 +440,7 @@ pnpm dev
 2. **Test federation loading** - ensure components load properly as federated modules
 3. **Follow TypeScript patterns** - maintain type safety throughout
 4. **Update documentation** - keep README and comments current
+5. **Run tests and linting** - use `pnpm test` and `pnpm lint` before committing
 
 ### Areas for Contribution
 - Enhanced link preview generation

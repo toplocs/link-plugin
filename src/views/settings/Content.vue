@@ -21,6 +21,10 @@ import LinkForm from '@/components/forms/LinkForm.vue';
 import LinkList from '@/components/LinkList.vue';
 import { linkProvider } from '@/composables/linkProvider';
 
+defineOptions({
+  name: 'LinkSettingsContent'
+});
+
 const props = defineProps({
   parentId: String,
 });
