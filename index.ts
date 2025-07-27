@@ -1,6 +1,6 @@
 // Plugin Development Environment
-import { createPluginDevelopmentEnvironment, type PluginDevConfig } from '@toplocs/plugin-dev-sdk';
-import '@toplocs/plugin-dev-sdk/style.css';
+import { createPluginDevelopmentEnvironment, type PluginDevConfig } from '@toplocs/plugin-sdk';
+import '@toplocs/plugin-sdk/style.css';
 
 // Import plugin configuration and components
 import pluginConfig from './src/index';
