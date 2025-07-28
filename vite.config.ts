@@ -56,6 +56,10 @@ export default defineConfig({
       mangle: false,
     },
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        landing: path.resolve(__dirname, 'landing.html')
+      },
       external: ['vue'],
       output: {
         globals: {
