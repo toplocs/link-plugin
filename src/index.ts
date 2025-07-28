@@ -3,22 +3,7 @@
  * This file defines the plugin configuration and exports it for use in TopLocs
  */
 
-interface BasePluginConfig {
-  id: string;
-  name: string;
-  url: string;
-  version?: string;
-  description?: string;
-  author?: string;
-  slots: Array<PluginSlot>;
-}
-
-interface PluginSlot {
-  entity: 'Topic' | 'Location';
-  page: 'Info' | 'Settings';
-  slot: 'Content' | 'Sidebar';
-  component: string;
-}
+import type { BasePluginConfig } from '@toplocs/plugin-sdk'
 
 const pluginConfig: BasePluginConfig = {
   id: 'link_plugin',
