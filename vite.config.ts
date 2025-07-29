@@ -50,6 +50,7 @@ export default defineConfig({
 
   build: {
     outDir: './dist',
+    assetsDir: '',
     minify: false,
     terserOptions: {
       compress: false,
