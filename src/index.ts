@@ -5,10 +5,12 @@
 
 import type { BasePluginConfig } from '@toplocs/plugin-sdk'
 
+const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '')
+
 const pluginConfig: BasePluginConfig = {
   id: 'link_plugin',
   name: 'Link',
-  url: 'http://localhost:3006/assets/plugin.js',
+  url: `${baseUrl}/plugin.js`,
   version: '1.0.0',
   description: 'Share and organize links within TopLocs spheres',
   author: 'TopLocs Team',

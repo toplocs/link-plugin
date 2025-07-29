@@ -56,7 +56,7 @@ const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^/
 const isDevelopment = window.location.hostname === 'localhost'
 
 const endpoints = {
-  plugin: `${baseUrl}/assets/plugin.js`,
+  plugin: `${baseUrl}/plugin.js`,
   landing: baseUrl,
   demo: 'https://toplocs.github.io/tribelike/'
 }
